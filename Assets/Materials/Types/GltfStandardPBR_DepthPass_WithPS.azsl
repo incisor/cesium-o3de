@@ -7,7 +7,7 @@
  */
 
 #include "./GltfStandardPBR_Common.azsli"
-#include <Atom/Features/PBR/DefaultObjectSrg.azsli>
+#include <GltfStandardPBR_ObjectSrg.azsli>
 #include <Atom/Features/ParallaxMapping.azsli>
 #include <Atom/Features/MatrixUtility.azsli>
 

@@ -2,6 +2,7 @@
 
 #include <Atom/Feature/Mesh/MeshFeatureProcessorInterface.h>
 #include <Atom/RPI.Public/Material/Material.h>
+#include <AtomLyIntegration/CommonFeatures/Material/MaterialComponentBus.h>
 #include <AzCore/std/containers/vector.h>
 #include <glm/glm.hpp>
 
@@ -14,6 +15,7 @@ namespace Cesium
         GltfMaterial() = default;
 
         AZ::Data::Instance<AZ::RPI::Material> m_material;
+        AZ::Data::Asset<AZ::RPI::MaterialAsset> m_materialAsset;
     };
 
     struct GltfPrimitive
@@ -56,6 +58,9 @@ namespace Cesium
         AZStd::vector<GltfMaterial>& GetMaterials();
 
         void UpdateMaterialForPrimitive(GltfPrimitive& primitive);
+
+        void UpdateMaterials();
+
 
         bool IsVisible() const;
 

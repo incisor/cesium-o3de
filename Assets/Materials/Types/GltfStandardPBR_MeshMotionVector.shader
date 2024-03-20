@@ -1,9 +1,11 @@
 {
-    "Source" : "./GltfStandardPBR_DepthPass_WithPS.azsl",
+    "Source" : "./GltfStandardPBR_MeshMotionVector.azsl",
 
     "DepthStencilState" : { 
         "Depth" : { "Enable" : true, "CompareFunc" : "GreaterEqual" }
     },
+
+    "DrawList" : "motion",
 
     "ProgramSettings":
     {
@@ -18,7 +20,5 @@
           "type": "Fragment"
         }
       ]
-    },
-
-    "DrawList" : "depth"
+    }
 }

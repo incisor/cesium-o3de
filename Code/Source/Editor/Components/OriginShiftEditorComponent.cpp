@@ -1,6 +1,7 @@
 #include "Editor/Components/OriginShiftEditorComponent.h"
 #include <Cesium/Math/MathReflect.h>
 #include <AzToolsFramework/API/ToolsApplicationAPI.h>
+#include <AzToolsFramework/UI/PropertyEditor/PropertyEditorAPI.h>
 #include <AtomToolsFramework/Viewport/ModularViewportCameraControllerRequestBus.h>
 #include <Atom/RPI.Public/ViewportContext.h>
 #include <Atom/RPI.Public/ViewportContextBus.h>
@@ -96,8 +97,9 @@ namespace Cesium
 
         UpdateTransform(origin);
 
-        PropertyEditorGUIMessages::Bus::Broadcast(
-            &PropertyEditorGUIMessages::RequestRefresh, PropertyModificationRefreshLevel::Refresh_AttributesAndValues);
+        AzToolsFramework::PropertyEditorGUIMessages::Bus::Broadcast(
+            &AzToolsFramework::PropertyEditorGUIMessages::RequestRefresh,
+            AzToolsFramework::PropertyModificationRefreshLevel::Refresh_AttributesAndValues);
         undoBatch.MarkEntityDirty(GetEntityId());
 
         MoveCameraToOrigin();
@@ -152,7 +154,7 @@ namespace Cesium
                 AtomToolsFramework::ModularViewportCameraControllerRequestBus::Event(
                     viewportContextPtr->GetId(),
                     &AtomToolsFramework::ModularViewportCameraControllerRequestBus::Events::InterpolateToTransform,
-                    AZ::Transform::CreateIdentity());
+                    AZ::Transform::CreateIdentity(), 0.0f);
             });
     }
 

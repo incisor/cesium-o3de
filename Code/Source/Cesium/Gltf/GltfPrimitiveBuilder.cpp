@@ -292,6 +292,7 @@ namespace Cesium
         }
 
         lodCreator.SetMeshAabb(std::move(aabb));
+        lodCreator.SetMeshMaterialSlot(primitive.material);
         lodCreator.EndMesh();
 
         AZ::Data::Asset<AZ::RPI::ModelLodAsset> lodAsset;
@@ -303,6 +304,11 @@ namespace Cesium
         AZ::RPI::ModelAssetCreator modelCreator;
         modelCreator.Begin(modelAssetId);
         modelCreator.AddLodAsset(std::move(lodAsset));
+
+        AZ::RPI::ModelMaterialSlot materialSlot;
+        materialSlot.m_stableId = primitive.material;
+        materialSlot.m_defaultMaterialAsset = material.m_materialAsset;
+        modelCreator.AddMaterialSlot(materialSlot);
 
         AZ::Data::Asset<AZ::RPI::ModelAsset> modelAsset;
         modelCreator.End(modelAsset);

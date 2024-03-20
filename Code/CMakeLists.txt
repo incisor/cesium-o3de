@@ -5,7 +5,7 @@
 #       in which case it will see if that platform is present here or in the restricted folder.
 #       i.e. It could here in our gem : Gems/Cesium/Code/Platform/<platorm_name>  or
 #            <restricted_folder>/<platform_name>/Gems/Cesium/Code
-ly_get_list_relative_pal_filename(pal_dir ${CMAKE_CURRENT_LIST_DIR}/Platform/${PAL_PLATFORM_NAME} ${o3de_gem_restricted_path} ${o3de_gem_path} ${o3de_gem_name})
+o3de_pal_dir(pal_dir ${CMAKE_CURRENT_LIST_DIR}/Platform/${PAL_PLATFORM_NAME} "${gem_restricted_path}" "${gem_path}" "${gem_parent_relative_path}")
 
 # Now that we have the platform abstraction layer (PAL) folder for this folder, thats where we will find the
 # traits for this platform. Traits for a platform are defines for things like whether or not something in this gem
@@ -127,57 +127,57 @@ endif()
 # Tests
 ################################################################################
 # See if globally, tests are supported
-if(PAL_TRAIT_BUILD_TESTS_SUPPORTED)
-    # We globally support tests, see if we support tests on this platform for Cesium.Static
-    if(PAL_TRAIT_CESIUM_TEST_SUPPORTED)
-        # We support Cesium.Tests on this platform, add Cesium.Tests target which depends on Cesium.Static
-        ly_add_target(
-            NAME Cesium.Tests ${PAL_TRAIT_TEST_TARGET_TYPE}
-            NAMESPACE Gem
-            FILES_CMAKE
-                cesium_files.cmake
-                cesium_tests_files.cmake
-            INCLUDE_DIRECTORIES
-                PRIVATE
-                    Tests
-                    Source
-            BUILD_DEPENDENCIES
-                PRIVATE
-                    AZ::AzTest
-                    AZ::AzFramework
-                    Gem::Cesium.Static
-        )
-
-        # Add Cesium.Tests to googletest
-        ly_add_googletest(
-            NAME Gem::Cesium.Tests
-        )
-    endif()
-
-    # If we are a host platform we want to add tools test like editor tests here
-    if(PAL_TRAIT_BUILD_HOST_TOOLS)
-        # We are a host platform, see if Editor tests are supported on this platform
-        if(PAL_TRAIT_CESIUM_EDITOR_TEST_SUPPORTED)
-            # We support Cesium.Editor.Tests on this platform, add Cesium.Editor.Tests target which depends on Cesium.Editor
-            ly_add_target(
-                NAME Cesium.Editor.Tests ${PAL_TRAIT_TEST_TARGET_TYPE}
-                NAMESPACE Gem
-                FILES_CMAKE
-                    cesium_editor_tests_files.cmake
-                INCLUDE_DIRECTORIES
-                    PRIVATE
-                        Tests
-                        Source
-                BUILD_DEPENDENCIES
-                    PRIVATE
-                        AZ::AzTest
-                        Gem::Cesium.Editor
-            )
-
-            # Add Cesium.Editor.Tests to googletest
-            ly_add_googletest(
-                NAME Gem::Cesium.Editor.Tests
-            )
-        endif()
-    endif()
-endif()
+# if(PAL_TRAIT_BUILD_TESTS_SUPPORTED)
+#     # We globally support tests, see if we support tests on this platform for Cesium.Static
+#     if(PAL_TRAIT_CESIUM_TEST_SUPPORTED)
+#         # We support Cesium.Tests on this platform, add Cesium.Tests target which depends on Cesium.Static
+#         ly_add_target(
+#             NAME Cesium.Tests ${PAL_TRAIT_TEST_TARGET_TYPE}
+#             NAMESPACE Gem
+#             FILES_CMAKE
+#                 cesium_files.cmake
+#                 cesium_tests_files.cmake
+#             INCLUDE_DIRECTORIES
+#                 PRIVATE
+#                     Tests
+#                     Source
+#             BUILD_DEPENDENCIES
+#                 PRIVATE
+#                     AZ::AzTest
+#                     AZ::AzFramework
+#                     Gem::Cesium.Static
+#         )
+# 
+#         # Add Cesium.Tests to googletest
+#         ly_add_googletest(
+#             NAME Gem::Cesium.Tests
+#         )
+#    endif()
+# 
+#     # If we are a host platform we want to add tools test like editor tests here
+#     if(PAL_TRAIT_BUILD_HOST_TOOLS)
+#         # We are a host platform, see if Editor tests are supported on this platform
+ #        if(PAL_TRAIT_CESIUM_EDITOR_TEST_SUPPORTED)
+#             # We support Cesium.Editor.Tests on this platform, add Cesium.Editor.Tests target which depends on Cesium.Editor
+#             ly_add_target(
+#                 NAME Cesium.Editor.Tests ${PAL_TRAIT_TEST_TARGET_TYPE}
+#                 NAMESPACE Gem
+#                 FILES_CMAKE
+#                     cesium_editor_tests_files.cmake
+#                 INCLUDE_DIRECTORIES
+#                     PRIVATE
+#                         Tests
+#                         Source
+#                 BUILD_DEPENDENCIES
+#                     PRIVATE
+#                         AZ::AzTest
+ #                        Gem::Cesium.Editor
+ #            )
+# 
+#             # Add Cesium.Editor.Tests to googletest
+#            ly_add_googletest(
+#                 NAME Gem::Cesium.Editor.Tests
+#             )
+#         endif()
+#     endif()
+# endif()

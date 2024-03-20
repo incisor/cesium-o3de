@@ -5,6 +5,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 
+#include <AtomLyIntegration/CommonFeatures/Mesh/MeshHandleStateBus.h>
+
 namespace Cesium
 {
     GltfPrimitive::GltfPrimitive()
@@ -45,13 +47,25 @@ namespace Cesium
                     const AZ::Data::Asset<AZ::RPI::MaterialAsset>& materialAsset = loadMaterial.m_materialAsset;
                     AZ::Data::Instance<AZ::RPI::Material> materialInstance = AZ::RPI::Material::FindOrCreate(materialAsset);
                     m_materials[loadPrimitive.m_materialId].m_material = std::move(materialInstance);
+                    m_materials[loadPrimitive.m_materialId].m_materialAsset = std::move(materialAsset);
                 }
 
                 if (loadPrimitive.m_materialId >= 0 && loadPrimitive.m_materialId < m_materials.size())
                 {
+ #if 0
                     auto meshHandle = m_meshFeatureProcessor->AcquireMesh(
                         AZ::Render::MeshHandleDescriptor{ loadPrimitive.m_modelAsset, false, false, {} },
                         m_materials[loadPrimitive.m_materialId].m_material);
+ #else
+                    AZ::Render::MeshHandleDescriptor meshDescriptor;
+                    meshDescriptor.m_modelAsset = loadPrimitive.m_modelAsset;
+                    meshDescriptor.m_isRayTracingEnabled = false;
+
+                    auto meshHandle = m_meshFeatureProcessor->AcquireMesh(meshDescriptor, m_materials[loadPrimitive.m_materialId].m_material);
+ #endif
+                    /*AZ::Render::MeshHandleStateNotificationBus::Event(
+                        entityId, &AZ::Render::MeshHandleStateNotificationBus::Events::OnMeshHandleSet, &meshHandle);*/
+
                     m_meshFeatureProcessor->SetTransform(meshHandle, o3deTransform, o3deScale);
 
                     GltfPrimitive primitive;
@@ -117,8 +131,17 @@ namespace Cesium
     {
         if (primitive.m_materialIndex >= 0)
         {
-            m_meshFeatureProcessor->SetMaterialAssignmentMap(primitive.m_meshHandle, m_materials[primitive.m_materialIndex].m_material);
+            AZ::Render::MaterialAssignmentMap materialMap;
+            auto& materialAssignment = materialMap[AZ::Render::MaterialAssignmentId::CreateFromStableIdOnly(primitive.m_materialIndex)];
+            materialAssignment.m_materialAsset = m_materials[primitive.m_materialIndex].m_materialAsset;
+            materialAssignment.m_materialInstance = m_materials[primitive.m_materialIndex].m_material;
+
+            m_meshFeatureProcessor->SetCustomMaterials(primitive.m_meshHandle, AZ::Render::ConvertToCustomMaterialMap(materialMap));
         }
+    }
+
+    void GltfModel::UpdateMaterials()
+    {
     }
 
     bool GltfModel::IsVisible() const
